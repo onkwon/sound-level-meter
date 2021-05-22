@@ -1,0 +1,3 @@
+[submodule "external/libabov"]
+	path = external/libabov
+	url = https://github.com/onkwon/libabov.git
