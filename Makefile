@@ -4,13 +4,13 @@ export DEVICE ?= stm32f1
 
 #NDEBUG := true
 
-LIBABOV_ROOT := external/libabov
-include $(LIBABOV_ROOT)/projects/sources.mk
+HALMCU_ROOT := external/halmcu
+include $(HALMCU_ROOT)/projects/sources.mk
 
 SRCS := src/main.c src/console.c src/mic.c src/tick.c src/printf.c \
-	$(LIBABOV_SRCS)
-INCS := $(LIBABOV_INCS)
-DEFS := $(LIBABOV_DEFS)
+	$(HALMCU_SRCS)
+INCS := $(HALMCU_INCS)
+DEFS := $(HALMCU_DEFS)
 OBJS := $(addprefix $(BUILDIR)/, $(SRCS:.c=.o))
 DEPS := $(OBJS:.o=.d)
 
@@ -22,8 +22,13 @@ LIBS = -lm
 
 OUTCOM := $(BUILDIR)/$(PROJECT)
 OUTELF := $(OUTCOM).elf
+OUTHEX := $(OUTCOM).hex
 
-all: $(OUTELF)
+all: $(OUTHEX)
+
+%.hex : $(OUTELF)
+	$(info generating  $@)
+	$(OC) -O ihex $< $@
 
 %.elf : $(OBJS) $(LD_SCRIPT)
 	$(CC) -o $@ \
@@ -52,3 +57,6 @@ endif
 .PHONY: clean
 clean:
 	$(Q)rm -fr $(BUILDIR)
+.PHONY: flash
+flash: $(OUTHEX)
+	$(Q)pyocd $@ -t $(DEVICE)03c8 $<

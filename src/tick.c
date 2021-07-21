@@ -1,6 +1,6 @@
 #include "tick.h"
-#include "abov/asm/arm/systick.h"
-#include "abov/irq.h"
+#include "halmcu/asm/arm/systick.h"
+#include "halmcu/irq.h"
 
 static uint32_t monotonic_counter;
 

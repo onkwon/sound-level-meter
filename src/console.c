@@ -1,7 +1,7 @@
 #include "console.h"
-#include "abov/hal/uart.h"
-#include "abov/hal/gpio.h"
-#include "abov/irq.h"
+#include "halmcu/hal/uart.h"
+#include "halmcu/hal/gpio.h"
+#include "halmcu/irq.h"
 
 static uart_handle_t uart0_handle;
 
