@@ -1,6 +1,8 @@
 # 소리 크기 측정
 STM32F1 와 MAX4466 로 만드는 간단한 소리 크기 측정기
 
+[FFT 관련 내용](fft.md)을 추가했습니다.
+
 ## 사용한 모듈
 * 마이크: MAX4466
   - [adafruit](https://www.adafruit.com/product/1063)
