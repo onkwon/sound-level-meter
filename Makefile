@@ -17,12 +17,18 @@ DSP_FFT_SRCS := \
 	$(DSP_PATH)/Source/CommonTables/arm_const_structs.c \
 	$(DSP_PATH)/Source/CommonTables/arm_common_tables.c \
 	$(DSP_PATH)/Source/BasicMathFunctions/arm_shift_q15.c \
+	$(DSP_PATH)/Source/BasicMathFunctions/arm_abs_q15.c \
 	$(DSP_PATH)/Source/TransformFunctions/arm_rfft_init_q15.c \
 	$(DSP_PATH)/Source/TransformFunctions/arm_rfft_q15.c \
 	$(DSP_PATH)/Source/TransformFunctions/arm_cfft_q15.c \
 	$(DSP_PATH)/Source/TransformFunctions/arm_cfft_radix4_q15.c \
 	$(DSP_PATH)/Source/TransformFunctions/arm_bitreversal2.c
-DSP_DEFS := ARM_DSP_CONFIG_TABLES
+DSP_DEFS := \
+	ARM_DSP_CONFIG_TABLES \
+	ARM_FFT_ALLOW_TABLES \
+	ARM_TABLE_REALCOEF_Q15 \
+	ARM_TABLE_TWIDDLECOEF_Q15_128 \
+	ARM_TABLE_BITREVIDX_FXT_128 \
 
 SRCS := src/main.c src/console.c src/mic.c src/tick.c src/printf.c src/fft.c \
 	$(HALMCU_SRCS) $(DSP_FFT_SRCS)
