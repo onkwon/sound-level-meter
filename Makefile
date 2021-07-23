@@ -7,16 +7,41 @@ export DEVICE ?= stm32f1
 HALMCU_ROOT := external/halmcu
 include $(HALMCU_ROOT)/projects/sources.mk
 
-SRCS := src/main.c src/console.c src/mic.c src/tick.c src/printf.c \
-	$(HALMCU_SRCS)
-INCS := $(HALMCU_INCS)
-DEFS := $(HALMCU_DEFS)
+DSP_PATH := $(HALMCU_ROOT)/arch/arm/include/CMSIS_5/CMSIS/DSP
+DSP_SRC_DIR := $(DSP_PATH)/Source
+DSP_SRCS := $(shell find $(DSP_SRC_DIR) -type f -regex ".*\.c")
+DSP_INCS := \
+	$(DSP_PATH)/Include \
+	$(DSP_PATH)/PrivateInclude
+DSP_FFT_SRCS := \
+	$(DSP_PATH)/Source/CommonTables/arm_const_structs.c \
+	$(DSP_PATH)/Source/CommonTables/arm_common_tables.c \
+	$(DSP_PATH)/Source/BasicMathFunctions/arm_shift_q15.c \
+	$(DSP_PATH)/Source/TransformFunctions/arm_rfft_init_q15.c \
+	$(DSP_PATH)/Source/TransformFunctions/arm_rfft_q15.c \
+	$(DSP_PATH)/Source/TransformFunctions/arm_cfft_q15.c \
+	$(DSP_PATH)/Source/TransformFunctions/arm_cfft_radix4_q15.c \
+	$(DSP_PATH)/Source/TransformFunctions/arm_bitreversal2.c
+DSP_DEFS := ARM_DSP_CONFIG_TABLES
+
+SRCS := src/main.c src/console.c src/mic.c src/tick.c src/printf.c src/fft.c \
+	$(HALMCU_SRCS) $(DSP_FFT_SRCS)
+INCS := $(HALMCU_INCS) $(DSP_INCS)
+DEFS := $(HALMCU_DEFS) $(DSP_DEFS)
 OBJS := $(addprefix $(BUILDIR)/, $(SRCS:.c=.o))
 DEPS := $(OBJS:.o=.d)
 
 LD_SCRIPT := ports/stm32f1/stm32f1.ld
 LDFLAGS += -specs=nano.specs #-specs=nosys.specs
 CFLAGS += -Wno-error=float-equal -Wno-error=sign-conversion # due to printf.c
+STACK_LIMIT := 256 # for fft
+CFLAGS += \
+	  -Wno-error=undef \
+	  -Wno-error=cast-qual \
+	  -Wno-error=conversion \
+	  -Wno-error=missing-prototypes \
+	  -Wno-error=switch-default \
+	  -Wno-error=unused-parameter \
 
 LIBS = -lm
 
