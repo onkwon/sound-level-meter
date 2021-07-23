@@ -14,7 +14,7 @@ static void mic_gpio_init(void)
 			.altfunc = true, });
 }
 
-void mic_init(void)
+void mic_init(uint32_t sample_cycle)
 {
 	mic_gpio_init();
 
@@ -22,7 +22,7 @@ void mic_init(void)
 	adc_set_mode(PERIPH_ADC1, ADC_MODE_CONTINUOUS_CONVERSION);
 	adc_set_trigger(PERIPH_ADC1, ADC_TRIGGER_MANUAL);
 	adc_select_channel(PERIPH_ADC1, ADC_CHANNEL_0);
-	adc_set_sample_time(PERIPH_ADC1, ADC_CHANNEL_0, 240);
+	adc_set_sample_time(PERIPH_ADC1, ADC_CHANNEL_0, sample_cycle);
 
 	adc_calibrate(PERIPH_ADC1);
 }
@@ -30,6 +30,14 @@ void mic_init(void)
 void mic_activate(void)
 {
 	adc_start(PERIPH_ADC1);
+}
+
+void mic_read_samples(uint16_t *samples, size_t n)
+{
+	for (size_t i = 0; i < n; i++) {
+		while (!adc_is_completed(PERIPH_ADC1)) { /* waiting */ }
+		samples[i] = (uint16_t)adc_get_measurement(PERIPH_ADC1);
+	}
 }
 
 void mic_measure(unsigned int samples, struct mic_raw *raw)
